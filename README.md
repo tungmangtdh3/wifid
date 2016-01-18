@@ -1,0 +1,2 @@
+# wifid
+Mozilla WiFi Daemon
