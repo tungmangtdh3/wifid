@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014  Mozilla Foundation
+ * Copyright (C) 2015-2016  Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,15 +26,15 @@ extern bool gWifiDebugFlag;
 #define TAG_WIFID "wifid"
 
 #define WIFI_DEBUG(level, tag, msg, ...)                                 \
-  if (gNfcDebugFlag) {                                                   \
+  if (gWifiDebugFlag) {                                                  \
     __android_log_print(level, tag, "%s: " msg, FUNC, ##__VA_ARGS__);    \
   }
 
 #define WIFID_DEBUG(msg, ...)  \
-  WIFI_DEBUG(ANDROID_LOG_DEBUG, TAG_NFCD, msg, ##__VA_ARGS__)
+  WIFI_DEBUG(ANDROID_LOG_DEBUG, TAG_WIFID, msg, ##__VA_ARGS__)
 #define WIFID_WARNING(msg, ...)  \
-  WIFI_DEBUG(ANDROID_LOG_WARN, TAG_NFCD, msg, ##__VA_ARGS__)
+  WIFI_DEBUG(ANDROID_LOG_WARN, TAG_WIFID, msg, ##__VA_ARGS__)
 #define WIFID_ERROR(msg, ...)  \
-  WIFI_DEBUG(ANDROID_LOG_ERROR, TAG_NFCD, msg, ##__VA_ARGS__)
+  WIFI_DEBUG(ANDROID_LOG_ERROR, TAG_WIFID, msg, ##__VA_ARGS__)
 
 #endif

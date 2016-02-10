@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014  Mozilla Foundation
+ * Copyright (C) 2015-2016  Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 #ifndef WifiGonkMessage_h
 #define WifiGonkMessage_h
+
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,7 +37,7 @@ extern "C" {
  *
  * Payload of a response messages
  *   2 bytes of the session Id.
- *   2 bytes of error code.
+ *   2 bytes of status code.
  *   Data of the response message.
  *
  * Payload of a notification message
@@ -52,45 +54,76 @@ typedef enum {
 } WifiMessageCategory;
 
 /**
- * Error codes.
+ * WiFi Message Types.
  */
 typedef enum {
-  WIFI_SUCCESS = 0,
-  WIFI_ERROR_TIMEOUT = 1,
-} WifiErrorCode;
+  WIFI_MESSAGE_TYPE_VERSION,
+  WIFI_MESSAGE_TYPE_LOAD_DRIVER,
+  WIFI_MESSAGE_TYPE_UNLOAD_DRIVER,
+  WIFI_MESSAGE_TYPE_START_SUPPLICANT,
+  WIFI_MESSAGE_TYPE_STOP_SUPPLICANT,
+  WIFI_MESSAGE_TYPE_CONNECT_TO_SUPPLICANT,
+  WIFI_MESSAGE_TYPE_CLOSE_SUPPLICANT_CONNECTION,
+  WIFI_MESSAGE_TYPE_COMMAND,
+} WifiMessageType;
 
 /**
- * Request Types.
+ * Status Codes.
  */
 typedef enum {
-  WIFI_REQUEST_LOAD_DRIVER,
-  WIFI_REQUEST_UNLOAD_DRIVER,
-  WIFI_REQUEST_START_SUPPLICANT,
-  WIFI_REQUEST_STOP_SUPPLICANT,
-  WIFI_REQUEST_CONNECT_TO_SUPPLICANT,
-  WIFI_REQUEST_CLOSE_SUPPLICANT_CONNECTION,
-  WIFI_REQUEST_COMMAND,
-} WifiRequestType;
-
-/**
- * Response Types.
- */
-typedef enum {
-  WIFI_RESPONSE_LOAD_DRIVER,
-  WIFI_RESPONSE_UNLOAD_DRIVER,
-  WIFI_RESPONSE_START_SUPPLICANT,
-  WIFI_RESPONSE_STOP_SUPPLICANT,
-  WIFI_RESPONSE_CONNECT_TO_SUPPLICANT,
-  WIFI_RESPONSE_CLOSE_SUPPLICANT_CONNECTION,
-  WIFI_RESPONSE_COMMAND,
-} WifiResponseType;
+  WIFI_STATUS_OK = 0,
+  WIFI_STATUS_ERROR = 1
+} WifiStatusCode;
 
 /*
  * Notification Types.
  */
 typedef enum {
-  WIFI_NOTIFICATION_EVENT;
+  WIFI_NOTIFICATION_EVENT
 } WifiNotificationType;
+
+struct WifiMsgHeader {
+  uint16_t msgCategory;
+  uint16_t msgType;
+  uint32_t len;
+} __attribute__((packed));
+
+struct WifiMsg {
+  struct WifiMsgHeader hdr;
+  uint8_t data[];
+} __attribute__((packed));
+
+struct WifiMsgReq {
+  struct WifiMsgHeader hdr;
+  uint16_t sessionId;
+  uint8_t data[];
+} __attribute__((packed));
+
+struct WifiMsgResp {
+  struct WifiMsgHeader hdr;
+  uint16_t sessionId;
+  uint16_t status;
+  uint8_t data[];
+} __attribute__((packed));
+
+struct WifiMsgNotify {
+  struct WifiMsgHeader hdr;
+  uint8_t data[];
+} __attribute__((packed));
+
+// WiFi message data
+struct WifiMsgVersion {
+  uint16_t majorVersion;
+  uint16_t minorVersion;
+} __attribute__((packed));
+
+struct WifiMsgStartStopSupp {
+  bool isP2pSupported;
+} __attribute__((packed));
+
+struct WifiMsgNotifyEvent {
+  char eventMsg[];
+};
 
 #ifdef __cplusplus
 }

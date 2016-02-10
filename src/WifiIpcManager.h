@@ -14,8 +14,34 @@
  * limitations under the License.
  */
 
+#ifndef WifiIpcManager_h
+#define WifiIpcManager_h
+
+#include <stdint.h>
+
 #include "IpcHandler.h"
 
-IpcHandler::~IpcHandler()
+class WifiMessageHandler;
+
+class WifiIpcManager
 {
-}
+private:
+  static WifiIpcManager* sInstance;
+
+public:
+  ~WifiIpcManager();
+
+  static WifiIpcManager* Instance();
+
+  void init(IpcHandler* aIpcHandler, WifiMessageHandler* aMsgHandler);
+  void loop();
+  int writeToIpc(uint8_t* aData, size_t aDataLen);
+
+private:
+  WifiIpcManager();
+
+  IpcHandler*     mIpcHandler;
+  WifiMessageHandler* mMsgHandler;
+};
+
+#endif // WifiIpcManager_h

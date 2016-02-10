@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014  Mozilla Foundation
+ * Copyright (C) 2015-2016  Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public:
 
   static const size_t NBOUNDS = 2; // respect leading and trailing '\0'
 
-  WifiIpcHandler(int aSockMode, char* aSockName, bool aIsSeqPacket);
+  WifiIpcHandler(int aSockMode, const char* aSockName, bool aIsSeqPacket);
   ~WifiIpcHandler();
 
   int openIpc();
@@ -46,8 +46,8 @@ private:
 
   int mRwFd;
   int mConnFd;
-  int mSockMode
-  char* mSockName;
+  int mSockMode;
+  const char* mSockName;
   bool mIsSeqPacket;
   bool mIsConnected;
 };

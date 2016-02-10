@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014  Mozilla Foundation
+ * Copyright (C) 2015-2016  Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,13 +26,13 @@
 #include "WifiDebug.h"
 #include "WifiIpcHandler.h"
 
-WifiIpcHandler::WifiIpcHandler(int aSockMode, char* aSockName, bool aIsSeqPacket)
-  : mSockMode(aSockMode)
+WifiIpcHandler::WifiIpcHandler(int aSockMode, const char* aSockName, bool aIsSeqPacket)
+  : mRwFd(-1)
+  , mConnFd(-1)
+  , mSockMode(aSockMode)
   , mSockName(aSockName)
   , mIsSeqPacket(aIsSeqPacket)
-  , mIsConnected(false);
-  , mRwFd(-1)
-  , mConnFd(-1)
+  , mIsConnected(false)
 {
 }
 
@@ -45,6 +45,10 @@ int
 WifiIpcHandler::openIpc()
 {
   int ret = -1;
+
+  if (mIsConnected) {
+    return 0;
+  }
 
   switch (mSockMode) {
     case CONNECT_MODE:
@@ -112,7 +116,7 @@ WifiIpcHandler::waitForData()
     return -1;
   }
 
-  fds[0].fd = mNfcdRw;
+  fds[0].fd = mRwFd;
   fds[0].events = POLLIN;
   fds[0].revents = 0;
 
@@ -132,6 +136,8 @@ int WifiIpcHandler::closeIpc()
   if (mConnFd != -1) {
     close(mConnFd);
   }
+
+  mIsConnected = false;
 
   return 0;
 }
@@ -222,6 +228,12 @@ WifiIpcHandler::openListenSocket()
   }
 
   return 0;
+}
+
+bool
+WifiIpcHandler::isConnected()
+{
+  return mIsConnected;
 }
 
 void

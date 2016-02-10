@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014  Mozilla Foundation
+ * Copyright (C) 2015-2016  Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,15 @@ class IpcHandler {
 public:
   virtual int openIpc() = 0;
 
-  virtual int readIpc(uint8_t* aData, size_t* aDataLen) = 0;
+  virtual int readIpc(uint8_t* aData, size_t aDataLen) = 0;
 
   virtual int writeIpc(uint8_t* aData, size_t aDataLen) = 0;
 
   virtual int closeIpc() = 0;
 
   virtual int waitForData() = 0;
+
+  virtual bool isConnected() = 0;
 
   virtual ~IpcHandler() = 0;
 };
