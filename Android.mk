@@ -21,14 +21,18 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := \
     src/wifid.cpp \
-    src/IpcHandler.cpp
+    src/WifiMessageHandler.cpp \
+    src/IpcHandler.cpp \
+    src/WifiIpcHandler.cpp \
+    src/WifiIpcManager.cpp
 
 LOCAL_C_INCLUDES += \
     $(LOCAL_PATH)/src \
     bionic
 
 LOCAL_C_INCLUDES += \
-    $(LOCAL_PATH)/src
+    $(LOCAL_PATH)/src \
+    external/stlport/stlport \
 
 LOCAL_SHARED_LIBRARIES += \
     libhardware \

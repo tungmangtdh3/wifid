@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015  Mozilla Foundation
+ * Copyright (C) 2015-2016  Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,36 @@
  * limitations under the License.
  */
 
-#include "wifid.h"
-
-#define LOG_TAG "wifid"
 #include <cutils/log.h>
 
+#include "wifid.h"
+#include "WifiDebug.h"
+#include "WifiGonkMessage.h"
+#include "WifiMessageHandler.h"
+#include "WifiIpcHandler.h"
+#include "WifiIpcManager.h"
+
+#define LOG_TAG "wifid"
+
+const char* SOCKNAME = "wifid";
+
+bool gWifiDebugFlag = true;
+
 int main() {
+
+  // Create the wifi ipc handler
+  WifiIpcHandler* ipcHandler = new WifiIpcHandler(WifiIpcHandler::CONNECT_MODE, SOCKNAME, true);
+
+  // Create the wifi message handler
+  WifiMessageHandler* msgHandler = new WifiMessageHandler();
+
+  // Create the Ipc manager
+  WifiIpcManager* ipcManager = WifiIpcManager::Instance();
+
+  // Initiate
+  ipcManager->init(ipcHandler, msgHandler);
+  msgHandler->setIpcManager(ipcManager);
+
+
 
 }
