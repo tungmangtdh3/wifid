@@ -14,42 +14,29 @@
  * limitations under the License.
  */
 
-#ifndef WifiIpcManager_h
-#define WifiIpcManager_h
+#ifndef daemon_h
+#define daemon_h
 
-#include <stdint.h>
-
-#include "MessageConsumer.h"
+#include "CommandLine.h"
 
 namespace wifi {
 
-class IpcHandler;
-class MessageProducer;
-class WifiBaseMessage;
-class MessageDispatcher;
+class Daemon {
+ public:
+  static bool Initialize(const CommandLineOptions *aOp);
 
-class WifiIpcManager : public MessageConsumer
-{
-private:
-  static WifiIpcManager sInstance;
+  static void ShutDown();
 
-public:
-  ~WifiIpcManager();
+  static Daemon* GetInstance();
 
-  static WifiIpcManager& GetInstance();
+  // Starts the daemon's main loop.
+  virtual void Start() = 0;
 
-  void Initialize(IpcHandler* aIpcHandler, MessageProducer* aProducer);
-
-  void ShutDown();
-
-  void Loop();
-
-  int ConsumeMessage(WifiBaseMessage* aMessage);
-
-private:
-  WifiIpcManager();
-
-  IpcHandler*     mIpcHandler;
+ protected:
+  virtual ~Daemon() = 0;
+ private:
+  // Internal instance helper called by Initialize().
+  virtual bool Init(const CommandLineOptions *aOp) = 0;
 };
 }
-#endif // WifiIpcManager_h
+#endif // daemon_h

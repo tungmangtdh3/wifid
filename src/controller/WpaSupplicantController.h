@@ -14,7 +14,36 @@
  * limitations under the License.
  */
 
-#ifndef wifid_h
-#define wifid_h
+#ifndef WpaSupplicantController_h
+#define WpaSupplicantController_h
 
-#endif // wifid_h
+#include "Controller.h"
+
+namespace wifi {
+
+class MessageHandlerListener;
+
+namespace controller {
+
+class WpaSupplicantController : public Controller {
+public:
+  WpaSupplicantController(MessageHandlerListener* aListener);
+
+  ~WpaSupplicantController();
+
+  int HandleRequest(uint16_t aType, uint8_t* aData, size_t aDataLen);
+
+  void* WaitForEvent();
+
+private:
+  void StartMonitorEvent();
+
+  void StopMonitorEvent();
+
+  int GetWifiP2pSupported();
+
+  bool mMonitored;
+};
+} //controller
+} //wifi
+#endif //WpaSupplicantController_h

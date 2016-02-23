@@ -19,6 +19,8 @@
 
 #include <stdint.h>
 
+namespace wifi {
+
 class IpcHandler {
 public:
   virtual int openIpc() = 0;
@@ -35,5 +37,5 @@ public:
 
   virtual ~IpcHandler() = 0;
 };
-
+} //namespace wifi
 #endif // IpcHandler_h

@@ -14,42 +14,43 @@
  * limitations under the License.
  */
 
-#ifndef WifiIpcManager_h
-#define WifiIpcManager_h
+#ifndef HostApdController_h
+#define HostApdController_h
 
-#include <stdint.h>
+#include <linux/in.h>
+#include <net/if.h>
 
-#include "MessageConsumer.h"
+#include "Controller.h"
 
 namespace wifi {
 
-class IpcHandler;
-class MessageProducer;
-class WifiBaseMessage;
-class MessageDispatcher;
+class MessageHandlerListener;
 
-class WifiIpcManager : public MessageConsumer
-{
-private:
-  static WifiIpcManager sInstance;
+namespace controller {
 
+class HostApdController : public Controller {
 public:
-  ~WifiIpcManager();
+  HostApdController(MessageHandlerListener* aListener);
 
-  static WifiIpcManager& GetInstance();
+  ~HostApdController();
 
-  void Initialize(IpcHandler* aIpcHandler, MessageProducer* aProducer);
-
-  void ShutDown();
-
-  void Loop();
-
-  int ConsumeMessage(WifiBaseMessage* aMessage);
+  int HandleRequest(uint16_t aType, uint8_t* aData, size_t aDataLen);
 
 private:
-  WifiIpcManager();
+  int32_t ConnectHostApd();
 
-  IpcHandler*     mIpcHandler;
+  int32_t CloseHostApd();
+
+  int32_t GetStations();
+
+  int32_t SendCommand(const char *aCmd,
+                      char *aReply,
+                      size_t *aReplyLen);
+
+  char *GetWifiIfname();
+
+  pid_t mPid;
 };
-}
-#endif // WifiIpcManager_h
+} //controller
+} //wifi
+#endif

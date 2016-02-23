@@ -19,16 +19,16 @@
 
 #include "utils/Log.h"
 
-extern bool gWifiDebugFlag;
-
 #define FUNC __PRETTY_FUNCTION__
 
 #define TAG_WIFID "wifid"
 
+#ifdef WIFI_DEBUG_FLAG
 #define WIFI_DEBUG(level, tag, msg, ...)                                 \
-  if (gWifiDebugFlag) {                                                  \
-    __android_log_print(level, tag, "%s: " msg, FUNC, ##__VA_ARGS__);    \
-  }
+    __android_log_print(level, tag, "%s: " msg, FUNC, ##__VA_ARGS__)
+#else
+#define WIFI_DEBUG(level, tag, msg, ...)
+#endif
 
 #define WIFID_DEBUG(msg, ...)  \
   WIFI_DEBUG(ANDROID_LOG_DEBUG, TAG_WIFID, msg, ##__VA_ARGS__)

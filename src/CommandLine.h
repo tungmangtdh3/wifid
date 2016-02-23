@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-#include "IpcHandler.h"
+#ifndef CommandLine_h
+#define CommandLine_h
 
-namespace wifi {
-
-IpcHandler::~IpcHandler()
+/// Command line options
+typedef struct
 {
-}
-}
+  bool useListenSocket;
+  const char* socketName;
+  bool useSeqPacket;
+} CommandLineOptions;
+
+int ParseCommandLine(int aArgc, char* aArgv[], CommandLineOptions *op);
+
+#endif

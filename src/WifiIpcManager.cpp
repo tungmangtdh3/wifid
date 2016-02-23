@@ -16,25 +16,24 @@
 
 #include <assert.h>
 
+#include "IpcHandler.h"
 #include "WifiDebug.h"
 #include "WifiIpcManager.h"
-#include "WifiMessageHandler.h"
+#include "MessageHandler.h"
+
+namespace wifi {
 
 const size_t MAX_BUFSIZE = 4096;
 
-WifiIpcManager* WifiIpcManager::sInstance = NULL;
+WifiIpcManager WifiIpcManager::sInstance;
 
-WifiIpcManager*
-WifiIpcManager::Instance() {
-  if (!sInstance) {
-    sInstance = new WifiIpcManager();
-  }
-  return sInstance;
+WifiIpcManager&
+WifiIpcManager::GetInstance() {
+   return sInstance;
 }
 
 WifiIpcManager::WifiIpcManager()
   : mIpcHandler(NULL)
-  , mMsgHandler(NULL)
 {
 }
 
@@ -42,16 +41,17 @@ WifiIpcManager::~WifiIpcManager()
 {
 }
 
+
 void
-WifiIpcManager::init(IpcHandler* aIpcHandler, WifiMessageHandler* aMsgHandler)
+WifiIpcManager::Initialize(IpcHandler* aIpcHandler, MessageProducer* aProducer)
 {
   int ret;
 
   assert(aIpcHandler);
-  assert(aMsgHandler);
 
   mIpcHandler = aIpcHandler;
-  mMsgHandler = aMsgHandler;
+
+  MessageHandler::GetInstance().Initialize(aProducer);
 
   // open Socket
   ret = mIpcHandler->openIpc();
@@ -62,7 +62,7 @@ WifiIpcManager::init(IpcHandler* aIpcHandler, WifiMessageHandler* aMsgHandler)
 }
 
 void
-WifiIpcManager::loop()
+WifiIpcManager::Loop()
 {
   int ret;
   uint8_t buf[MAX_BUFSIZE];
@@ -97,7 +97,7 @@ WifiIpcManager::loop()
         break;
       }
 
-      ret = mMsgHandler->processMsg(buf, length);
+      ret = MessageHandler::GetInstance().Dispatch(buf, length);
 
       if (ret < 0) {
         WIFID_ERROR("WifiIpcManager: Error when processing data.\n");
@@ -108,12 +108,11 @@ WifiIpcManager::loop()
   }
 }
 
-int
-WifiIpcManager::writeToIpc(uint8_t* aData, size_t aDataLen)
+int WifiIpcManager::ConsumeMessage(WifiBaseMessage* aMessage)
 {
-  if (aData == NULL) {
-    return -1;
-  }
-
-  return mIpcHandler->writeIpc(aData, aDataLen);
+  int ret = mIpcHandler->writeIpc(aMessage->GetBuffer(), aMessage->GetLength());
+  delete aMessage;
+  return ret;
 }
+
+} //namespace wifi

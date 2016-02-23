@@ -19,6 +19,8 @@
 
 #include "IpcHandler.h"
 
+namespace wifi {
+
 class WifiIpcHandler :
   public IpcHandler
 {
@@ -51,5 +53,5 @@ private:
   bool mIsSeqPacket;
   bool mIsConnected;
 };
-
+} //namespace wifi
 #endif // mozilla_WifiIpcHandler_h

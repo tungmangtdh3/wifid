@@ -13,43 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#ifndef WifiIpcManager_h
-#define WifiIpcManager_h
-
-#include <stdint.h>
-
-#include "MessageConsumer.h"
+#ifndef MessageConsumer_h
+#define MessageConsumer_h
 
 namespace wifi {
 
-class IpcHandler;
-class MessageProducer;
 class WifiBaseMessage;
-class MessageDispatcher;
 
-class WifiIpcManager : public MessageConsumer
-{
-private:
-  static WifiIpcManager sInstance;
+class MessageConsumer {
+ public:
+  virtual int ConsumeMessage(WifiBaseMessage* aMessage) = 0;
 
-public:
-  ~WifiIpcManager();
-
-  static WifiIpcManager& GetInstance();
-
-  void Initialize(IpcHandler* aIpcHandler, MessageProducer* aProducer);
-
-  void ShutDown();
-
-  void Loop();
-
-  int ConsumeMessage(WifiBaseMessage* aMessage);
-
-private:
-  WifiIpcManager();
-
-  IpcHandler*     mIpcHandler;
+  virtual ~MessageConsumer();
 };
 }
-#endif // WifiIpcManager_h
+#endif // MessageConsumer_h

@@ -26,6 +26,8 @@
 #include "WifiDebug.h"
 #include "WifiIpcHandler.h"
 
+namespace wifi {
+
 WifiIpcHandler::WifiIpcHandler(int aSockMode, const char* aSockName, bool aIsSeqPacket)
   : mRwFd(-1)
   , mConnFd(-1)
@@ -52,7 +54,7 @@ WifiIpcHandler::openIpc()
 
   switch (mSockMode) {
     case CONNECT_MODE:
-  	  ret = openConnectSocket();
+      ret = openConnectSocket();
       break;
 
     case LISTEN_MODE:
@@ -87,6 +89,10 @@ WifiIpcHandler::writeIpc(uint8_t* aData, size_t aDataLen)
   int size;
 
   if (!mIsConnected) {
+    return -1;
+  }
+
+  if (!aData) {
     return -1;
   }
 
@@ -244,3 +250,4 @@ WifiIpcHandler::settingSocket()
     WIFID_ERROR("Error setting O_NONBLOCK errno: %s\n", strerror(errno));
   }
 }
+}//namespace wifi

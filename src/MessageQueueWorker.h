@@ -14,42 +14,43 @@
  * limitations under the License.
  */
 
-#ifndef WifiIpcManager_h
-#define WifiIpcManager_h
+#ifndef MessageQueueWorker_h
+#define MessageQueueWorker_h
 
-#include <stdint.h>
-
-#include "MessageConsumer.h"
+#include <vector>
+#include "MessageProducer.h"
 
 namespace wifi {
 
-class IpcHandler;
-class MessageProducer;
+class MessageConsumer;
 class WifiBaseMessage;
-class MessageDispatcher;
 
-class WifiIpcManager : public MessageConsumer
+class MessageQueueWorker : public MessageProducer
 {
-private:
-  static WifiIpcManager sInstance;
-
 public:
-  ~WifiIpcManager();
+  void Initialize();
 
-  static WifiIpcManager& GetInstance();
-
-  void Initialize(IpcHandler* aIpcHandler, MessageProducer* aProducer);
+  void* Loop();
 
   void ShutDown();
 
-  void Loop();
+  void PushMessage(const WifiBaseMessage* aMessage);
 
-  int ConsumeMessage(WifiBaseMessage* aMessage);
+  MessageQueueWorker(MessageConsumer* aConsummer);
+
+  ~MessageQueueWorker();
 
 private:
-  WifiIpcManager();
 
-  IpcHandler*     mIpcHandler;
+  //TODO currently using vector to store messages
+  //May use a LIFO queue
+  //Should use unique_ptr of C++11
+  std::vector <WifiBaseMessage*> mMessageQueue;
+
+  MessageConsumer* mConsumer;
+
+  bool mDone;
+
 };
 }
-#endif // WifiIpcManager_h
+#endif // MessageQueueWorker_h
