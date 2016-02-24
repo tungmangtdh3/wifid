@@ -23,9 +23,6 @@
 #include "Controller.h"
 
 namespace wifi {
-
-class MessageHandlerListener;
-
 namespace controller {
 
 class HostApdController : public Controller {
@@ -34,7 +31,7 @@ public:
 
   ~HostApdController();
 
-  int HandleRequest(uint16_t aType, uint8_t* aData, size_t aDataLen);
+  int32_t HandleRequest(uint16_t aType, uint8_t* aData, size_t aDataLen);
 
 private:
   int32_t ConnectHostApd();

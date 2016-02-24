@@ -18,13 +18,12 @@
 #define CommandLine_h
 
 /// Command line options
-typedef struct
-{
+typedef struct {
   bool useListenSocket;
   const char* socketName;
   bool useSeqPacket;
 } CommandLineOptions;
 
-int ParseCommandLine(int aArgc, char* aArgv[], CommandLineOptions *op);
+int32_t ParseCommandLine(int32_t aArgc, char* aArgv[], CommandLineOptions *op);
 
 #endif

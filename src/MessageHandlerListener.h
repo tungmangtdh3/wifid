@@ -16,7 +16,7 @@
 #ifndef MessageHandlerListener_h
 #define MessageHandlerListener_h
 
-#include "WifiGonkMessage.h"
+#include "WifiMessage.h"
 
 namespace wifi {
 

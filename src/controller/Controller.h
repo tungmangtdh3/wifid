@@ -17,12 +17,15 @@
 #ifndef Controller_h
 #define Controller_h
 
-#include "WifiGonkMessage.h"
+#include "WifiMessage.h"
+
+using namespace wifi;
 
 namespace wifi {
-
 class MessageHandlerListener;
+}
 
+namespace wifi {
 namespace controller {
 
 class Controller
@@ -31,7 +34,7 @@ public:
   Controller(MessageHandlerListener* aListener);
   virtual ~Controller();
 
-  virtual int HandleRequest(uint16_t aType, uint8_t* aData, size_t aDataLen) = 0;
+  virtual int32_t HandleRequest(uint16_t aType, uint8_t* aData, size_t aDataLen) = 0;
 
 protected:
   MessageHandlerListener* mListener;

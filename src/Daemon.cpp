@@ -18,11 +18,14 @@
 #include <stdlib.h>
 
 #include "Daemon.h"
+#include "IpcHandler.h"
 #include "MessageConsumer.h"
 #include "MessageProducer.h"
 #include "MessageQueueWorker.h"
 #include "WifiIpcHandler.h"
-#include "WifiIpcManager.h"
+#include "IpcManager.h"
+
+using namespace wifi::ipc;
 
 namespace wifi {
 namespace {
@@ -64,20 +67,19 @@ class DaemonImpl : public Daemon {
                                          aOp->socketName,
                                          aOp->useSeqPacket);
 
-    mMsgQueueWorker = new MessageQueueWorker(static_cast<MessageConsumer*>(&WifiIpcManager::GetInstance()));
+    mMsgQueueWorker = new MessageQueueWorker(&IpcManager::GetInstance());
     mMsgQueueWorker->Initialize();
 
-    WifiIpcManager::GetInstance().Initialize(mIpcHandler,static_cast<MessageProducer*>(mMsgQueueWorker));
+    IpcManager::GetInstance().Initialize(mIpcHandler,mMsgQueueWorker);
 
     return true;
   }
 
   bool mInitialized;
   //TODO using unique_ptr and enable C++11
-  WifiIpcHandler*  mIpcHandler;
-  WifiIpcManager* mIpcManager;
+  IpcHandler*  mIpcHandler;
+  IpcManager* mIpcManager;
   MessageQueueWorker* mMsgQueueWorker;
-  
 };
 }  // namespace
 

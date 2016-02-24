@@ -18,7 +18,7 @@
 #define MessageHandler_h
 
 #include "MessageHandlerListener.h"
-#include "WifiGonkMessage.h"
+#include "WifiMessage.h"
 
 namespace wifi {
 
@@ -27,8 +27,7 @@ class WifiBaseMessage;
 
 namespace controller
 {
-  class WpaSupplicantController;
-  class HostApdController;
+  class Controller;
 }
 
 using namespace controller;
@@ -42,7 +41,7 @@ public:
 
   void Initialize(MessageProducer* aProducer);
 
-  int Dispatch(uint8_t* aData, size_t aDataLen);
+  int32_t Dispatch(uint8_t* aData, size_t aDataLen);
 
   void OnNotification(WifiNotificationType aType, void* aData, size_t aLength);
   void OnResponse(WifiMessageType aType, WifiStatusCode aStatus,
@@ -66,8 +65,8 @@ private:
   MessageProducer* mProducer;
   std::map< uint16_t, std::queue<uint16_t> > mSessionMap;
 
-  WpaSupplicantController* mWpaController;
-  HostApdController* mHostApdController;
+  Controller* mWpaController;
+  Controller* mHostApdController;
 };
 
 } //namespace wifi

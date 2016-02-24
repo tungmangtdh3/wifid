@@ -18,34 +18,34 @@
 
 #include "IpcHandler.h"
 #include "WifiDebug.h"
-#include "WifiIpcManager.h"
+#include "IpcManager.h"
 #include "MessageHandler.h"
 
 namespace wifi {
+namespace ipc {
 
 const size_t MAX_BUFSIZE = 4096;
 
-WifiIpcManager WifiIpcManager::sInstance;
+IpcManager IpcManager::sInstance;
 
-WifiIpcManager&
-WifiIpcManager::GetInstance() {
+IpcManager&
+IpcManager::GetInstance() {
    return sInstance;
 }
 
-WifiIpcManager::WifiIpcManager()
+IpcManager::IpcManager()
   : mIpcHandler(NULL)
 {
 }
 
-WifiIpcManager::~WifiIpcManager()
+IpcManager::~IpcManager()
 {
 }
 
 
-void
-WifiIpcManager::Initialize(IpcHandler* aIpcHandler, MessageProducer* aProducer)
+void IpcManager::Initialize(IpcHandler* aIpcHandler, MessageProducer* aProducer)
 {
-  int ret;
+  int32_t ret;
 
   assert(aIpcHandler);
 
@@ -61,19 +61,18 @@ WifiIpcManager::Initialize(IpcHandler* aIpcHandler, MessageProducer* aProducer)
   }
 }
 
-void
-WifiIpcManager::Loop()
+void IpcManager::Loop()
 {
-  int ret;
+  int32_t ret;
   uint8_t buf[MAX_BUFSIZE];
-  int length;
+  int32_t length;
   while (1) {
 
     // open Socket
     ret = mIpcHandler->openIpc();
 
     if (ret < 0) {
-      WIFID_ERROR("WifiIpcManager: Fail to open Ipc: %s\n", strerror(errno));
+      WIFID_ERROR("IpcManager: Fail to open Ipc: %s\n", strerror(errno));
       continue;
     }
 
@@ -81,7 +80,7 @@ WifiIpcManager::Loop()
       ret = mIpcHandler->waitForData();
 
       if (ret < 0) {
-        WIFID_ERROR("WifiIpcManager: Error when waiting data: %s\n", strerror(errno));
+        WIFID_ERROR("IpcManager: Error when waiting data: %s\n", strerror(errno));
         continue;
       }
 
@@ -90,17 +89,17 @@ WifiIpcManager::Loop()
       length = mIpcHandler->readIpc(buf, MAX_BUFSIZE);
 
       if (length == 0) {
-        WIFID_DEBUG("WifiIpcManager: End of socket.");
+        WIFID_DEBUG("IpcManager: End of socket.");
         break;
       } else if (length < 0) {
-        WIFID_ERROR("WifiIpcManager: Error when reading data: %s\n", strerror(errno));
+        WIFID_ERROR("IpcManager: Error when reading data: %s\n", strerror(errno));
         break;
       }
 
       ret = MessageHandler::GetInstance().Dispatch(buf, length);
 
       if (ret < 0) {
-        WIFID_ERROR("WifiIpcManager: Error when processing data.\n");
+        WIFID_ERROR("IpcManager: Error when processing data.\n");
       }
     }
 
@@ -108,11 +107,11 @@ WifiIpcManager::Loop()
   }
 }
 
-int WifiIpcManager::ConsumeMessage(WifiBaseMessage* aMessage)
+int32_t IpcManager::ConsumeMessage(WifiBaseMessage* aMessage)
 {
-  int ret = mIpcHandler->writeIpc(aMessage->GetBuffer(), aMessage->GetLength());
+  int32_t ret = mIpcHandler->writeIpc(aMessage->GetBuffer(), aMessage->GetLength());
   delete aMessage;
   return ret;
 }
-
+} //namespace ipc
 } //namespace wifi

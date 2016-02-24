@@ -17,8 +17,10 @@
 #include "IpcHandler.h"
 
 namespace wifi {
+namespace ipc {
 
 IpcHandler::~IpcHandler()
 {
 }
-}
+} //ipc
+} //wifi

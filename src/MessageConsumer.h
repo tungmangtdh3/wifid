@@ -16,13 +16,15 @@
 #ifndef MessageConsumer_h
 #define MessageConsumer_h
 
+#include <stdint.h>
+
 namespace wifi {
 
 class WifiBaseMessage;
 
 class MessageConsumer {
  public:
-  virtual int ConsumeMessage(WifiBaseMessage* aMessage) = 0;
+  virtual int32_t ConsumeMessage(WifiBaseMessage* aMessage) = 0;
 
   virtual ~MessageConsumer();
 };

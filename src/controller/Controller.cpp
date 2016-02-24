@@ -19,6 +19,7 @@
 
 namespace wifi {
 namespace controller {
+
 Controller::Controller(MessageHandlerListener* aListener)
   : mListener(aListener)
 {

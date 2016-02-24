@@ -20,9 +20,6 @@
 #include "Controller.h"
 
 namespace wifi {
-
-class MessageHandlerListener;
-
 namespace controller {
 
 class WpaSupplicantController : public Controller {
@@ -31,7 +28,7 @@ public:
 
   ~WpaSupplicantController();
 
-  int HandleRequest(uint16_t aType, uint8_t* aData, size_t aDataLen);
+  int32_t HandleRequest(uint16_t aType, uint8_t* aData, size_t aDataLen);
 
   void* WaitForEvent();
 
@@ -40,7 +37,7 @@ private:
 
   void StopMonitorEvent();
 
-  int GetWifiP2pSupported();
+  int32_t GetWifiP2pSupported();
 
   bool mMonitored;
 };

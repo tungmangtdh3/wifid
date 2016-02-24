@@ -21,14 +21,13 @@
 #include "HostApdController.h"
 #include "MessageProducer.h"
 #include "WifiDebug.h"
-#include "WifiIpcManager.h"
 #include "MessageHandler.h"
 #include "WpaSupplicantController.h"
 
 #define MAJOR_VER 1
 #define MINOR_VER 0
 
-using namespace wifi::controller;
+using namespace controller;
 
 namespace wifi {
 MessageHandler MessageHandler::sInstance;
@@ -159,7 +158,7 @@ MessageHandler::SendMessage(WifiBaseMessage* aMessage)
 void
 MessageHandler::SendNotification(void* aNotification, size_t aLength)
 {
-  WifiBaseMessage* notifyMsg = new WifiNotificationMessage<struct WifiMsgNotifyEvent>
+  WifiBaseMessage* notifyMsg = new WifiNotificationMessage<WifiMsgNotifyEvent>
     (reinterpret_cast<uint8_t*>(aNotification), aLength);
 
   SendMessage(notifyMsg);
@@ -173,8 +172,8 @@ MessageHandler::SendResponse(WifiMessageType aType, WifiStatusCode aStatus)
   sessionId = mSessionMap[aType].front();
   mSessionMap[aType].pop();
 
-  WifiEmptyMessage<struct WifiMsgResp>* respMsg = new
-    WifiEmptyMessage<struct WifiMsgResp>(WIFI_MESSAGE_RESPONSE, aType);
+  WifiEmptyMessage<WifiMsgResp>* respMsg = new
+    WifiEmptyMessage<WifiMsgResp>(WIFI_MESSAGE_RESPONSE, aType);
   (*respMsg)->sessionId = sessionId;
   (*respMsg)->status = aStatus;
 
@@ -187,14 +186,14 @@ MessageHandler::SendResponse(WifiMessageType aType,
                                 uint8_t* aData,
                                 size_t aLength)
 {
-  //TODO send response with data structured in WifiGonkMessage
+  //TODO send response with data structured in WifiMessage
   uint16_t sessionId;
 
   sessionId = mSessionMap[aType].front();
   mSessionMap[aType].pop();
 
-  WifiEmptyMessage<struct WifiMsgResp>* respMsg = new
-    WifiEmptyMessage<struct WifiMsgResp>(aData, aLength);
+  WifiEmptyMessage<WifiMsgResp>* respMsg = new
+    WifiEmptyMessage<WifiMsgResp>(aData, aLength);
 
   SendMessage(static_cast<WifiBaseMessage*>(respMsg));
 }
@@ -207,8 +206,8 @@ MessageHandler::HandleMessageVersion()
   sessionId = mSessionMap[WIFI_MESSAGE_TYPE_VERSION].front();
   mSessionMap[WIFI_MESSAGE_TYPE_VERSION].pop();
 
-  WifiResponseMessage<struct WifiMsgVersion>* respMsg =
-    new WifiResponseMessage<struct WifiMsgVersion>(WIFI_MESSAGE_TYPE_VERSION);
+  WifiResponseMessage<WifiMsgVersion>* respMsg =
+    new WifiResponseMessage<WifiMsgVersion>(WIFI_MESSAGE_TYPE_VERSION);
 
   respMsg->SetStatus(WIFI_STATUS_OK);
   respMsg->SetSessionId(sessionId);

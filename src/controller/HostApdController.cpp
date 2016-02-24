@@ -58,7 +58,7 @@ char* HostApdController::GetWifiIfname()
 int32_t HostApdController::ConnectHostApd()
 {
   char ctrlConnPath[256];
-  int retryTimes = 20;
+  int32_t retryTimes = 20;
 
   if(*GetWifiIfname() == '\0') {
     WIFID_DEBUG("wifi_connect_to_hostapd: GetWifiIfname fail");
@@ -163,12 +163,12 @@ int32_t HostApdController::SendCommand(const char *aCmd,
 
   return 0;
 }
-int HostApdController::HandleRequest(uint16_t aType,
+int32_t HostApdController::HandleRequest(uint16_t aType,
                                      uint8_t* aData,
                                      size_t aDataLen) {
   assert(aData);
 
-  int ret = 0;
+  int32_t ret = 0;
   size_t len = BUFFER_SIZE - 1;
   char buffer[BUFFER_SIZE];
 
@@ -201,7 +201,7 @@ int HostApdController::HandleRequest(uint16_t aType,
 
 int32_t HostApdController::GetStations() {
   char addr[32], cmd[64];
-  int stations = 0;
+  int32_t stations = 0;
   size_t addrLen = sizeof(addr);
 
   if (!sCtrlConn) {

@@ -22,23 +22,24 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES := \
     src/CommandLine.cpp \
     src/Daemon.cpp \
-    src/IpcHandler.cpp \
+    src/ipc/IpcHandler.cpp \
+    src/ipc/WifiIpcHandler.cpp \
+    src/ipc/IpcManager.cpp \
     src/main.cpp \
     src/MessageConsumer.cpp \
     src/MessageHandlerListener.cpp \
     src/MessageHandler.cpp \
     src/MessageProducer.cpp \
     src/MessageQueueWorker.cpp \
-    src/WifiIpcHandler.cpp \
-    src/WifiIpcManager.cpp \
     src/controller/Controller.cpp \
     src/controller/HostApdController.cpp \
     src/controller/WpaSupplicantController.cpp
 
 LOCAL_C_INCLUDES += \
     $(LOCAL_PATH)/src \
-    $(LOCAL_PATH)/src/utils \
+    $(LOCAL_PATH)/src/ipc \
     $(LOCAL_PATH)/src/controller \
+    $(LOCAL_PATH)/src/utils \
     bionic
 
 LOCAL_C_INCLUDES += \

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef WifiGonkMessage_h
-#define WifiGonkMessage_h
+#ifndef WifiMessage_h
+#define WifiMessage_h
 
 #include <assert.h>
 #include <stdint.h>
@@ -23,14 +23,12 @@
 #include <queue>
 #include <map>
 
-#include "WifiGonkMessage.h"
-
-#define WIFI_MSG_GET_HEADER(x) (reinterpret_cast<struct WifiMsgHeader*>(x))
+#define WIFI_MSG_GET_HEADER(x) (reinterpret_cast<WifiMsgHeader*>(x))
 #define WIFI_MSG_GET_CATEGORY(x) (WIFI_MSG_GET_HEADER(x)->msgCategory)
 #define WIFI_MSG_GET_TYPE(x) (WIFI_MSG_GET_HEADER(x)->msgType)
 #define WIFI_MSG_GET_LEN(x) (WIFI_MSG_GET_HEADER(x)->len)
 
-#define WIFI_MSG_GET_REQ(x) (reinterpret_cast<struct WifiMsgReq*>(x))
+#define WIFI_MSG_GET_REQ(x) (reinterpret_cast<WifiMsgReq*>(x))
 #define WIFI_MSG_GET_REQ_SESSION_ID(x) (WIFI_MSG_GET_REQ(x)->sessionId)
 
 namespace wifi {
@@ -102,52 +100,52 @@ typedef enum {
 extern "C" {
 #endif
 
-struct WifiMsgHeader {
+typedef struct {
   uint16_t msgCategory;
   uint16_t msgType;
   uint32_t len;
-} __attribute__((packed));
+} __attribute__((packed)) WifiMsgHeader;
 
-struct WifiMsg {
-  struct WifiMsgHeader hdr;
+typedef struct {
+  WifiMsgHeader hdr;
   uint8_t data[];
-} __attribute__((packed));
+} __attribute__((packed)) WifiMsg;
 
-struct WifiMsgReq {
-  struct WifiMsgHeader hdr;
+typedef struct {
+  WifiMsgHeader hdr;
   uint16_t sessionId;
   uint8_t data[];
-} __attribute__((packed));
+} __attribute__((packed)) WifiMsgReq;
 
-struct WifiMsgResp {
-  struct WifiMsgHeader hdr;
+typedef struct {
+  WifiMsgHeader hdr;
   uint16_t sessionId;
   uint16_t status;
   uint8_t data[];
-} __attribute__((packed));
+} __attribute__((packed)) WifiMsgResp;
 
-struct WifiMsgNotify {
-  struct WifiMsgHeader hdr;
+typedef struct {
+  WifiMsgHeader hdr;
   uint8_t data[];
-} __attribute__((packed));
+} __attribute__((packed)) WifiMsgNotify;
 
 // WiFi message data
-struct WifiMsgVersion {
+typedef struct {
   uint16_t majorVersion;
   uint16_t minorVersion;
-} __attribute__((packed));
+} __attribute__((packed)) WifiMsgVersion;
 
-struct WifiMsgStartStopSupp {
+typedef struct {
   bool isP2pSupported;
-} __attribute__((packed));
+} __attribute__((packed)) WifiMsgStartStopSupp;
 
 #ifdef __cplusplus
 }
 #endif
 
-struct WifiMsgNotifyEvent {
+typedef struct {
   char eventMsg[];
-};
+} WifiMsgNotifyEvent;
 
 class WifiBaseMessage
 {
@@ -303,21 +301,21 @@ protected:
 
 template<typename T>
 class WifiRequestMessage
-  : WifiMessage<struct WifiMsgReq, T>
+  : WifiMessage<WifiMsgReq, T>
 {
 public:
   WifiRequestMessage(const uint8_t* aData, size_t aDataLen)
-    : WifiMessage<struct WifiMsgReq, T>(aData, aDataLen)
+    : WifiMessage<WifiMsgReq, T>(aData, aDataLen)
   {
   }
 
   WifiRequestMessage(WifiMessageType aMsgType)
-    : WifiMessage<struct WifiMsgReq, T>(WIFI_MESSAGE_REQUEST, aMsgType)
+    : WifiMessage<WifiMsgReq, T>(WIFI_MESSAGE_REQUEST, aMsgType)
   {
   }
 
   WifiRequestMessage(WifiMessageType aMsgType, const T* aMsgBody, size_t aMsgLen)
-    : WifiMessage<struct WifiMsgReq, T>(WIFI_MESSAGE_REQUEST,
+    : WifiMessage<WifiMsgReq, T>(WIFI_MESSAGE_REQUEST,
         aMsgType, aMsgBody, aMsgLen)
   {
   }
@@ -328,32 +326,32 @@ public:
 
   uint16_t GetSessionId()
   {
-    return WifiMessage<struct WifiMsgReq, T>::mMsg->aSessionId;
+    return WifiMessage<WifiMsgReq, T>::mMsg->aSessionId;
   }
 
   void SetSessionId(uint16_t aSessionId)
   {
-    WifiMessage<struct WifiMsgReq, T>::mMsg->sessionId = aSessionId;
+    WifiMessage<WifiMsgReq, T>::mMsg->sessionId = aSessionId;
   }
 };
 
 template<typename T>
 class WifiResponseMessage
-  : public WifiMessage<struct WifiMsgResp, T>
+  : public WifiMessage<WifiMsgResp, T>
 {
 public:
   WifiResponseMessage(const uint8_t* aData, size_t aDataLen)
-    : WifiMessage<struct WifiMsgResp, T>(aData, aDataLen)
+    : WifiMessage<WifiMsgResp, T>(aData, aDataLen)
   {
   }
 
   WifiResponseMessage(WifiMessageType aMsgType)
-    : WifiMessage<struct WifiMsgResp, T>(WIFI_MESSAGE_RESPONSE, aMsgType)
+    : WifiMessage<WifiMsgResp, T>(WIFI_MESSAGE_RESPONSE, aMsgType)
   {
   }
 
   WifiResponseMessage(WifiMessageType aMsgType, const T* aMsgBody, size_t aMsgLen)
-    : WifiMessage<struct WifiMsgResp, T>(WIFI_MESSAGE_RESPONSE,
+    : WifiMessage<WifiMsgResp, T>(WIFI_MESSAGE_RESPONSE,
         aMsgType, aMsgBody, aMsgLen)
   {
   }
@@ -364,42 +362,42 @@ public:
 
   uint16_t GetSessionId()
   {
-    return WifiMessage<struct WifiMsgResp, T>::mMsg->aSessionId;
+    return WifiMessage<WifiMsgResp, T>::mMsg->aSessionId;
   }
 
   void SetSessionId(uint16_t aSessionId)
   {
-    WifiMessage<struct WifiMsgResp, T>::mMsg->sessionId = aSessionId;
+    WifiMessage<WifiMsgResp, T>::mMsg->sessionId = aSessionId;
   }
 
   uint16_t GetStatus()
   {
-    return WifiMessage<struct WifiMsgResp, T>::mMsg->status;
+    return WifiMessage<WifiMsgResp, T>::mMsg->status;
   }
 
   void SetStatus(WifiStatusCode aStatus)
   {
-    WifiMessage<struct WifiMsgResp, T>::mMsg->status = aStatus;
+    WifiMessage<WifiMsgResp, T>::mMsg->status = aStatus;
   }
 };
 
 template<typename T>
 class WifiNotificationMessage
-  : public WifiMessage<struct WifiMsgNotify, T>
+  : public WifiMessage<WifiMsgNotify, T>
 {
 public:
   WifiNotificationMessage(const uint8_t* aData, size_t aDataLen)
-    : WifiMessage<struct WifiMsgNotify, T>(aData, aDataLen)
+    : WifiMessage<WifiMsgNotify, T>(aData, aDataLen)
   {
   }
 
   WifiNotificationMessage(WifiMessageType aMsgType)
-    : WifiMessage<struct WifiMsgNotify, T>(WIFI_MESSAGE_NOTIFICATION, aMsgType)
+    : WifiMessage<WifiMsgNotify, T>(WIFI_MESSAGE_NOTIFICATION, aMsgType)
   {
   }
 
   WifiNotificationMessage(WifiMessageType aMsgType, const T* aMsgBody, size_t aMsgLen)
-    : WifiMessage<struct WifiMsgNotify, T>(WIFI_MESSAGE_NOTIFICATION,
+    : WifiMessage<WifiMsgNotify, T>(WIFI_MESSAGE_NOTIFICATION,
         aMsgType, aMsgBody, aMsgLen)
   {
   }
@@ -411,4 +409,5 @@ public:
 
 } //namespace wifi
 
-#endif // WifiGonkMessage_h
+#endif // WifiMessage_h
+

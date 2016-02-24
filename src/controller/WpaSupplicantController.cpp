@@ -54,7 +54,7 @@ static void* StaticThreadFunc(void* aArg)
   return controller->WaitForEvent();
 }
 
-int WpaSupplicantController::GetWifiP2pSupported()
+int32_t WpaSupplicantController::GetWifiP2pSupported()
 {
   char propP2pSupported[PROPERTY_VALUE_MAX];
   property_get(P2P_SUPPORT_PROPERTY, propP2pSupported, "0");
@@ -83,12 +83,12 @@ void WpaSupplicantController::StopMonitorEvent()
   mMonitored = false;
 }
 
-int WpaSupplicantController::HandleRequest(uint16_t aType,
+int32_t WpaSupplicantController::HandleRequest(uint16_t aType,
                                            uint8_t* aData,
                                            size_t aDataLen) {
   assert(aData);
 
-  int ret = 0;
+  int32_t ret = 0;
   size_t len = BUFFER_SIZE - 1;
   char buffer[BUFFER_SIZE];
 
@@ -137,7 +137,7 @@ int WpaSupplicantController::HandleRequest(uint16_t aType,
 void* WpaSupplicantController::WaitForEvent() {
   while(mMonitored) {
     char buf[EVENT_BUF_SIZE];
-    int nread = wifi_wait_for_event(buf, sizeof buf);
+    int32_t nread = wifi_wait_for_event(buf, sizeof buf);
     if (nread <= 0) {
       continue;
     }

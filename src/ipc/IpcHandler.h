@@ -20,22 +20,24 @@
 #include <stdint.h>
 
 namespace wifi {
+namespace ipc {
 
 class IpcHandler {
 public:
-  virtual int openIpc() = 0;
+  virtual int32_t openIpc() = 0;
 
-  virtual int readIpc(uint8_t* aData, size_t aDataLen) = 0;
+  virtual int32_t readIpc(uint8_t* aData, size_t aDataLen) = 0;
 
-  virtual int writeIpc(uint8_t* aData, size_t aDataLen) = 0;
+  virtual int32_t writeIpc(uint8_t* aData, size_t aDataLen) = 0;
 
-  virtual int closeIpc() = 0;
+  virtual int32_t closeIpc() = 0;
 
-  virtual int waitForData() = 0;
+  virtual int32_t waitForData() = 0;
 
   virtual bool isConnected() = 0;
 
-  virtual ~IpcHandler() = 0;
+  virtual ~IpcHandler();
 };
-} //namespace wifi
+} // namespace ipc
+} // namespace wifi
 #endif // IpcHandler_h

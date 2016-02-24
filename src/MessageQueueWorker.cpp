@@ -20,7 +20,7 @@
 #include "MessageConsumer.h"
 #include "MessageQueueWorker.h"
 #include "WifiDebug.h"
-#include "WifiGonkMessage.h"
+#include "WifiMessage.h"
 
 namespace wifi {
 

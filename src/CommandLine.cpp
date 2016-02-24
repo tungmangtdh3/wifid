@@ -22,7 +22,7 @@
 
 static const char* DEFAULT_SOCKET_NAME = "wifid";
 
-int SetSocketName(char* aArg, CommandLineOptions *aOp)
+int32_t SetSocketName(char* aArg, CommandLineOptions *aOp)
 {
   if (!aArg) {
     fprintf(stderr, "Error: No network address specified.");
@@ -37,7 +37,7 @@ int SetSocketName(char* aArg, CommandLineOptions *aOp)
   return 0;
 }
 
-int ShowCommandUsage()
+int32_t ShowCommandUsage()
 {
   printf("Usage: wifid [OPTION]\n"
       "\n"
@@ -55,23 +55,23 @@ int ShowCommandUsage()
   return 1;
 }
 
-int UseSeqSocket(CommandLineOptions *aOp)
+int32_t UseSeqSocket(CommandLineOptions *aOp)
 {
   aOp->useSeqPacket = true;
   return 0;
 }
 
-int UseListenSocket(CommandLineOptions *aOp)
+int32_t UseListenSocket(CommandLineOptions *aOp)
 {
   aOp->useListenSocket = true;
   return 0;
 }
 
 // Parse command line.
-int ParseCommandLine(int aArgc, char* aArgv[], CommandLineOptions *aOp)
+int32_t ParseCommandLine(int32_t aArgc, char* aArgv[], CommandLineOptions *aOp)
 {
   char word[100];
-  int res = 0;
+  int32_t res = 0;
 
   opterr = 0; /* no default error messages from getopt */
   aOp->socketName = DEFAULT_SOCKET_NAME;
@@ -79,7 +79,7 @@ int ParseCommandLine(int aArgc, char* aArgv[], CommandLineOptions *aOp)
   aOp->useSeqPacket = true;
 
   do {
-    int opt = getopt(aArgc, aArgv, "a:hS");
+    int32_t opt = getopt(aArgc, aArgv, "a:hS");
 
     if (opt < 0) {
       break; /* end of options */
