@@ -35,10 +35,12 @@ int main(int argc, char* argv[]) {
   }
 
   // Start the main loop.
-  wifi::Daemon::GetInstance()->Start();
+  wifi::Daemon::GetInstance().Start();
 
-  // The main message loop has exited; clean up the Daemon.
-  wifi::Daemon::GetInstance()->ShutDown();
+  // The main loop has exited; clean up the Daemon.
+  // The shutdown maynot be called in the case the daemon is killed by signal
+  // TODO:register signal Handling
+  wifi::Daemon::GetInstance().ShutDown();
 
   return EXIT_SUCCESS;
 }

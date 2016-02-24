@@ -27,16 +27,20 @@ class Daemon {
 
   static void ShutDown();
 
-  static Daemon* GetInstance();
+  static Daemon& GetInstance();
 
   // Starts the daemon's main loop.
   virtual void Start() = 0;
 
  protected:
-  virtual ~Daemon() = 0;
+  Daemon() {};
+  virtual ~Daemon();
  private:
   // Internal instance helper called by Initialize().
   virtual bool Init(const CommandLineOptions *aOp) = 0;
+
+  Daemon(Daemon const&);
+  void operator=(Daemon const&);
 };
 }
 #endif // daemon_h

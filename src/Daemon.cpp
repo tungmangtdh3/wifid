@@ -30,9 +30,6 @@ using namespace wifi::ipc;
 namespace wifi {
 namespace {
 
-// The global Daemon instance.
-Daemon* sDaemon = NULL;
-
 class DaemonImpl : public Daemon {
  public:
   DaemonImpl() : mInitialized(false) {
@@ -54,6 +51,8 @@ class DaemonImpl : public Daemon {
     delete mIpcHandler;
     mMsgQueueWorker->ShutDown();
     delete mMsgQueueWorker;
+
+    mInitialized = false;
   }
 
   bool Init(const CommandLineOptions *aOp) {
@@ -72,6 +71,8 @@ class DaemonImpl : public Daemon {
 
     IpcManager::GetInstance().Initialize(mIpcHandler,mMsgQueueWorker);
 
+    mInitialized = true;
+
     return true;
   }
 
@@ -84,30 +85,18 @@ class DaemonImpl : public Daemon {
 }  // namespace
 
 bool Daemon::Initialize(const CommandLineOptions *aOp) {
-  if (!sDaemon) {
-    return false;
-  }
-
-  sDaemon = new DaemonImpl();
-  if (sDaemon->Init(aOp)) {
+  if (GetInstance().Init(aOp)) {
     return true;
   }
-
-  delete sDaemon;
-  sDaemon = NULL;
-
   return false;
 }
 
 void Daemon::ShutDown() {
-  if (sDaemon) {
-    delete sDaemon;
-    sDaemon = NULL;
-  }
 }
 
-Daemon* Daemon::GetInstance() {
-  return sDaemon;
+Daemon& Daemon::GetInstance() {
+  static DaemonImpl instance;
+  return instance;
 }
 
 Daemon::~Daemon() {
